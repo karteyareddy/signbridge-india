@@ -1,0 +1,24 @@
+{
+  "name": "SIGNBRIDGE INDIA",
+  "short_name": "SIGNBRIDGE",
+  "description": "Offline-ready ISL access points for everyday public services.",
+  "start_url": "/access",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#4338ca",
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "/icons/signbridge.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/signbridge-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

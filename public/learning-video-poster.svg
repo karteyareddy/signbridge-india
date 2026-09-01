@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-label="SIGNBRIDGE lesson video">
+  <rect width="1280" height="720" fill="#0f172a"/>
+  <circle cx="640" cy="320" r="88" fill="#4f46e5"/>
+  <path d="M620 270l82 50-82 50z" fill="#fff"/>
+  <text x="640" y="480" text-anchor="middle" font-family="Arial,sans-serif" font-size="44" font-weight="700" fill="#fff">ISL Learning Video</text>
+  <text x="640" y="535" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#c7d2fe">Captions available</text>
+</svg>

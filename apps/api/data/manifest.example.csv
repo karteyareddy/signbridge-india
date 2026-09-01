@@ -1,0 +1,4 @@
+clip_id,clip_path,intent_id,signer_id,consent_confirmed,label_reviewed
+clip-0001,raw/clip-0001.npz,hello,signer-001,true,true
+clip-0002,raw/clip-0002.npz,thank_you,signer-001,true,true
+clip-0003,raw/clip-0003.npz,hello,signer-002,true,true
