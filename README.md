@@ -64,6 +64,26 @@ SignBridge India uses a pragmatic 3-tier architecture optimized for speed, relia
 
 ---
 
+### Data model (Supabase / PostgreSQL)
+
+Defined in `supabase/migrations/` (three migrations, 26 RLS policies). Key tables:
+
+| Table | Purpose | Important fields |
+| :--- | :--- | :--- |
+| `users` | Profile linked to `auth.users` | `role` (`citizen` default; `staff`, `interpreter`, `admin`), `preferred_language`, `accessibility_preferences` |
+| `institutions` | Hospitals, stations, banks | `name`, `type`, `district`, `state`, `readiness_level` |
+| `access_points` | Physical ISL Access Points | `institution_id`, `service_type`, `qr_token` (unique), `nfc_id`, `active` |
+| `staff_profiles` | Staff membership per institution | `user_id`, `institution_id`, `role`, `training_level`, `badge` |
+| `courses`, `lessons`, `learning_attempts` | Micro-learning content and progress | course/lesson hierarchy, per-user attempts |
+| `service_packs`, `phrases` | Offline domain vocabulary | pack metadata, phrase text/media |
+| `practice_sessions`, `ai_predictions` | Practice logs and recognition telemetry | user, intent, confidence |
+| `assistance_requests` | Human escalation queue with lifecycle states | requester, institution, status timestamps |
+| `feedback`, `content_reports`, `model_versions` | Ratings, moderation, model registry | — |
+
+See [DATABASE.md](DATABASE.md) for the full schema and policy text.
+
+---
+
 ## 📁 Repository Structure
 
 ```
@@ -111,8 +131,8 @@ ISL/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-org/signbridge-india.git
-   cd signbridge-india
+   git clone https://github.com/karteyareddy/ISL.git
+   cd ISL
    ```
 
 2. **Install Node dependencies:**
@@ -171,6 +191,39 @@ ISL/
 
 ---
 
+## 🖥️ Usage
+
+### Frontend routes
+
+| Route | Who | Purpose |
+| :--- | :--- | :--- |
+| `/` | Everyone | Landing page |
+| `/access`, `/access/[qrToken]` | Deaf citizens (no login) | Scan/enter an Access Point token; phrase cards, form guidance, escalation |
+| `/recognize` | Everyone | Live camera landmark recognition with confidence display |
+| `/learn`, `/learn/[courseId]`, `/learn/progress` | Hearing staff | Role-based micro-courses and progress |
+| `/practice/[lessonId]` | Staff | Sign practice drills |
+| `/login` | Staff, interpreters, admins | Supabase Auth |
+| `/dashboard`, `/escalate`, `/admin` | Authenticated roles (via `middleware.ts` session refresh + RLS) | Readiness dashboard, escalation queue, administration |
+| `/api/offline-sync` | Client | Next.js route handler used by the PWA to sync offline data |
+
+### AI inference API (`apps/api`, FastAPI)
+
+| Method | Path | Auth | Purpose |
+| :--- | :--- | :--- | :--- |
+| GET | `/health` | none | Model readiness, version, threshold, sequence/feature sizes |
+| GET | `/api/v1/intents` | none | Constrained list of supported intents with `high_stakes` flag |
+| POST | `/api/v1/predict` | none (CORS-restricted origins) | Landmark frame sequence in, `intent` + `confidence` out; below the 0.85 threshold the response signals fallback |
+
+Example:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/predict   -H "content-type: application/json"   -d '{"frames": [[0.12, 0.34, 0.0, ...]]}'
+```
+
+Full request/response schemas are in [API.md](API.md).
+
+---
+
 ## 🧪 Testing & Code Quality
 
 Run tests and linting before submitting pull requests:
@@ -205,6 +258,26 @@ SignBridge India adheres strictly to Deaf-first ethical guidelines:
 
 ---
 
+## 🚢 Deployment
+
+- **Frontend**: Vercel (import the repo; set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_ML_API_URL`). `npm run build` runs `tsc --noEmit` before `next build`.
+- **AI API**: any Python host (Render, Railway, or a container running `uvicorn app.main:app --port 8000`); set the allowed CORS origins to the frontend domain.
+- **Database**: Supabase project; apply `supabase/migrations/*.sql` in order and optionally `supabase/seed.sql`.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) section 12 for the target topology.
+
+---
+
+## 🚧 Limitations & Roadmap
+
+- Recognition is intentionally limited to a fixed intent set; it is not a general ISL translator.
+- The inference API has no authentication of its own; it relies on CORS and should sit behind a gateway in production.
+- Several tables allow anonymous inserts (`feedback`, `ai_predictions`, `assistance_requests`, `content_reports`) by design for no-login access; rate limiting is not yet implemented.
+- Model quality depends on the landmark dataset supplied to `apps/api/training/`; no public pretrained weights are bundled.
+- Next steps: interpreter availability/scheduling, richer offline packs, model versioning rollout via `model_versions`.
+
+---
+
 ## 📚 Project Documentation
 
 For deeper details, consult our technical documentation:
@@ -222,9 +295,21 @@ We welcome contributions from developers, designers, Deaf community advocates, a
 
 ---
 
+## 🙏 Acknowledgements
+
+MediaPipe Tasks Vision (landmark extraction), PyTorch / ONNX Runtime, FastAPI, Next.js, Supabase. Built with input from the Deaf-first principles described in [PRD.md](PRD.md).
+
+---
+
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 👤 Author
+
+Kristipati Karteya Reddy — GitHub [@karteyareddy](https://github.com/karteyareddy)
 
 ---
 
