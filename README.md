@@ -212,12 +212,17 @@ ISL/
 | :--- | :--- | :--- | :--- |
 | GET | `/health` | none | Model readiness, version, threshold, sequence/feature sizes |
 | GET | `/api/v1/intents` | none | Constrained list of supported intents with `high_stakes` flag |
-| POST | `/api/v1/predict` | none (CORS-restricted origins) | Landmark frame sequence in, `intent` + `confidence` out; below the 0.85 threshold the response signals fallback |
+| POST | `/api/v1/predict` | none (CORS-restricted origins) | 21–30 landmark frames in; `status` (`accepted` / `fallback` / `unavailable`), `intent`, `confidence`, `threshold` out. Below the 0.85 threshold `status` is `fallback` with guidance |
 
-Example:
+Example request body (each frame: `timestamp_ms`, 33 `pose` landmarks, optional 21-point `left_hand` / `right_hand`):
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/predict   -H "content-type: application/json"   -d '{"frames": [[0.12, 0.34, 0.0, ...]]}'
+```json
+{
+  "frames": [
+    { "timestamp_ms": 0,  "pose": [{ "x": 0.51, "y": 0.32, "z": -0.1 }, "...33 items"], "right_hand": ["...21 items"] },
+    { "timestamp_ms": 33, "pose": ["..."], "right_hand": ["..."] }
+  ]
+}
 ```
 
 Full request/response schemas are in [API.md](API.md).
