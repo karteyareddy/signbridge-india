@@ -60,7 +60,7 @@ export function PhraseBoard({ phrases, initialIntent, onSelectPhrase }: PhraseBo
       {/* Grid of Phrase Cards */}
       {filteredPhrases.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
-          No phrases found for category "{activeCategory}".
+          No phrases found for category &ldquo;{activeCategory}&rdquo;.
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
@@ -107,7 +107,7 @@ export function PhraseBoard({ phrases, initialIntent, onSelectPhrase }: PhraseBo
             <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-center">
               <div className="text-xs uppercase font-bold text-indigo-700">Display to Staff:</div>
               <div id="selected-phrase-title" className="mt-1 text-xl font-extrabold text-slate-950">
-                "{selectedPhrase.text}"
+                &ldquo;{selectedPhrase.text}&rdquo;
               </div>
             </div>
 
