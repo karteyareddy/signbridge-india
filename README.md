@@ -1,3 +1,12 @@
+<!-- banner:start -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.svg">
+    <img alt="SignBridge India: A deaf-first accessibility network for Indian Sign Language." src=".github/assets/banner-light.svg" width="100%">
+  </picture>
+</p>
+<!-- banner:end -->
+
 # SIGNBRIDGE INDIA 🤟🇮🇳
 
 > **A Deaf-First Accessibility Network for Indian Sign Language (ISL)**  
